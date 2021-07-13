@@ -1,0 +1,22 @@
+/[Bb]inaries/
+/[Bb]uild/
+/[Dd]erivedDataCache/
+/[Ii]ntermediate/
+/[Ss]aved/
+/[Ss]cript/
+/[Ss]ubstance/
+.vscode
+.vs
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+
+# Plugin files
+/[Pp]lugins/*/Binaries/
+/[Pp]lugins/*/Intermediate/
