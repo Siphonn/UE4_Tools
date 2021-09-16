@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UObject/ConstructorHelpers.h"
 #include "MaskVolumeActor.generated.h"
 
 class AMaskManagerActor;
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, config = Engine, meta = (ShortTooltip = "Mask Volume actor CPP base."))
 class MASKVOLUME_API AMaskVolumeActor : public AActor
 {
 	GENERATED_BODY()
@@ -23,18 +24,22 @@ public:
 		bool bEnableMask = true;
 	UPROPERTY(EditAnywhere, Interp, Category = "Mask Values")
 		bool bInvertMask = false;
-
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		USceneComponent* SceneComponent;
 
 protected:
-	virtual void OnConstruction(const FTransform& Transform);
-	virtual void Destroyed() override;
-#if WITH_EDITOR
-	virtual void SetIsTemporarilyHiddenInEditor(bool bIsHidden);
-#endif
+	UFUNCTION()
+		virtual void OnConstruction(const FTransform& Transform);
+	UFUNCTION()
+		virtual void Destroyed() override;
 
 private:
 	UFUNCTION()
 		void CreateMaskManger();
+
+protected:
+#if WITH_EDITOR
+	virtual void SetIsTemporarilyHiddenInEditor(bool bIsHidden);
+
+#endif
 };

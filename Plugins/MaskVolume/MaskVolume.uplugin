@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "1.2",
 	"FriendlyName": "Mask Volume",
 	"Description": "Tool that masks specific materials.",
 	"Category": "Dimension88",

@@ -3,40 +3,12 @@
 
 #include "MaskManagerActor.h"
 #include "Kismet/GameplayStatics.h"
-#include "Materials/MaterialParameterCollectionInstance.h"
 
 // Sets default values
 AMaskManagerActor::AMaskManagerActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-}
-
-/// <summary>
-/// Called by SetIsTemporarilyHiddenInEditor (inherited) in MaskVolume.
-/// </summary>
-/// <param name="Volume"></param>
-/// <param name="bShowVolume"></param>
-void AMaskManagerActor::HideVolumeInEditor(AMaskVolumeActor* Volume, bool bShowVolume)
-{
-	int32 index;
-	FName SetMaskParam;
-	for (int i = 0; i < MaskVolumes.Num(); i++)
-	{
-		if (Volume == MaskVolumes[i])
-		{
-			index = i;
-			break;
-		}
-	}
-
-	SetMaskParam = ((index == 0) ? FName(TEXT("SetMask_1")) : FName(TEXT("SetMask_2")));
-
-	if (!MaskParametersInstance)
-	{
-		MaskParametersInstance = GetWorld()->GetParameterCollectionInstance(MaskParameters);
-	}
-	MaskParametersInstance->SetScalarParameterValue(SetMaskParam, bShowVolume);
 }
 
 /// <summary>
@@ -48,7 +20,7 @@ void AMaskManagerActor::RemoveVolume(AMaskVolumeActor* Volume)
 {
 	if (!MaskVolumes.Contains(Volume)) { return; } // Check is the Volume is in the array of MaskVolumes
 
-	int32 index;
+	int32 index = 0;
 	FName SetMaskParam;
 	for (int i = 0; i < MaskVolumes.Num(); ++i)
 	{
@@ -83,7 +55,7 @@ void AMaskManagerActor::RemoveVolume(AMaskVolumeActor* Volume)
 /// </summary>
 void AMaskManagerActor::UpdateVolume_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("C++: Update Volume"));
+	//UE_LOG(LogTemp, Warning, TEXT("C++: Update Volume"));
 }
 
 /// <summary>
@@ -101,3 +73,33 @@ void AMaskManagerActor::Destroyed()
 	MaskParametersInstance->SetScalarParameterValue("SetMask_1", 0.0f);
 	MaskParametersInstance->SetScalarParameterValue("SetMask_2", 0.0f);
 }
+
+#if WITH_EDITOR
+/// <summary>
+/// Called by SetIsTemporarilyHiddenInEditor (inherited) in MaskVolume.
+/// </summary>
+/// <param name="Volume"></param>
+/// <param name="bShowVolume"></param>
+void AMaskManagerActor::HideVolumeInEditor(AMaskVolumeActor* Volume, bool bShowVolume)
+{
+	int32 index = 0;
+	FName SetMaskParam;
+	for (int i = 0; i < MaskVolumes.Num(); i++)
+	{
+		if (Volume == MaskVolumes[i])
+		{
+			index = i;
+			break;
+		}
+	}
+
+	SetMaskParam = ((index == 0) ? FName(TEXT("SetMask_1")) : FName(TEXT("SetMask_2")));
+
+	if (!MaskParametersInstance)
+	{
+		MaskParametersInstance = GetWorld()->GetParameterCollectionInstance(MaskParameters);
+	}
+	MaskParametersInstance->SetScalarParameterValue(SetMaskParam, bShowVolume);
+}
+
+#endif

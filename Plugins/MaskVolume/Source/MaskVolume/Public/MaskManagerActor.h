@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Materials/MaterialParameterCollectionInstance.h"
+#include "Engine/World.h"
 #include "MaskManagerActor.generated.h"
 
 class AMaskVolumeActor;
@@ -27,14 +29,16 @@ public:
 	UFUNCTION()
 		void RemoveVolume(AMaskVolumeActor* Volume);
 
-#if WITH_EDITOR
-	UFUNCTION()
-		void HideVolumeInEditor(AMaskVolumeActor* Volume, bool bShowVolume);
-#endif
-
 protected:
 	virtual void Destroyed() override;
 
 private:
 	UMaterialParameterCollectionInstance* MaskParametersInstance = nullptr;
+
+public:
+#if WITH_EDITOR
+	UFUNCTION()
+		void HideVolumeInEditor(AMaskVolumeActor* Volume, bool bShowVolume);
+
+#endif
 };

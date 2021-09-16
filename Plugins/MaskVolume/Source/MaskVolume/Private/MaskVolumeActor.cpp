@@ -44,6 +44,7 @@ AMaskVolumeActor::AMaskVolumeActor()
 						MaskManager = nullptr;
 						UE_LOG(LogTemp, Warning, TEXT("Only 2 Mask Volumes can work simultaneously!"));
 						GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("Only 2 Mask Volumes can work simultaneously!"));
+
 					}
 				}
 			}
@@ -72,26 +73,13 @@ void AMaskVolumeActor::OnConstruction(const FTransform& Transform)
 }
 
 /// <summary>
-/// Inherited method. UNDO
-/// Used to HIDE or SHOW mask volume effect. It did not work in OnConstruction()
-/// **NOTE: It might be better to move this code to a different function
-/// </summary>
-void AMaskVolumeActor::SetIsTemporarilyHiddenInEditor(bool bIsHidden)
-{
-	Super::SetIsTemporarilyHiddenInEditor(bIsHidden);
-
-	if (!MaskManager) { return; }
-	MaskManager->HideVolumeInEditor(this, !bIsHidden);
-}
-
-/// <summary>
 /// Create a Mask Manager. 
 /// The manager will handle the updates to the material parameter collection which inturn is connected to a material function.
 /// </summary>
 void AMaskVolumeActor::CreateMaskManger()
 {
 	ConstructorHelpers::FObjectFinder<UBlueprint> ManagerBlueprint(TEXT("Blueprint'/MaskVolume/MaskManager.MaskManager'"));
-	
+
 	if (!UObject::IsTemplate(RF_Transient))
 	{
 		if (ManagerBlueprint.Object)
@@ -103,8 +91,10 @@ void AMaskVolumeActor::CreateMaskManger()
 		}
 		else
 		{
+#if WITH_EDITOR
 			UE_LOG(LogTemp, Warning, TEXT("C++: No MaskManager found"));
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("No MaskManager found! Check Path."));
+#endif
 		}
 	}
 }
@@ -124,3 +114,19 @@ void AMaskVolumeActor::Destroyed()
 		}
 	}
 }
+
+#if WITH_EDITOR
+/// <summary>
+/// Inherited method. UNDO
+/// Used to HIDE or SHOW mask volume effect. It did not work in OnConstruction()
+/// **NOTE: It might be better to move this code to a different function
+/// </summary>
+void AMaskVolumeActor::SetIsTemporarilyHiddenInEditor(bool bIsHidden)
+{
+	Super::SetIsTemporarilyHiddenInEditor(bIsHidden);
+
+	if (!MaskManager) { return; }
+	MaskManager->HideVolumeInEditor(this, !bIsHidden);
+}
+
+#endif
